@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Testcases>
+	<testcase methodname="request">
+		<Requests url='www.bing.com' is_https='1' http_method='GET'>
+			<param key="ddd" value="hgf"/>
+			<signup tel="123456" telack="5555" passwd="123456" signname="yyyy"/>
+		</Requests>	
+	</testcase>
+	<testcase methodname="app">
+		<Requests url='www.testerhome.com' is_https='1' http_method='POST'>
+			<param key="ddd" value="hgf"/>
+			<signup tel="123456" telack="5555" passwd="123456" signname="yyyy"/>
+		</Requests>	
+	</testcase>
+	<testcase name="third">
+		<Requests url='active.uqee.com' is_https='1' http_method='GET'>
+			<param key="ccc" value="ttt"/>
+			<signup tel="123456" telack="5555" passwd="123456" signname="yyyy"/>
+		</Requests>
+	</testcase>
+</Testcases>
