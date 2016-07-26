@@ -2,6 +2,7 @@
 #client_http.py
 import requests
 from PIL import Image
+import unittest
 #from StringIO import StringIO
 import json
 import os
@@ -10,9 +11,13 @@ from requests import Request, Session
 from requests.auth import AuthBase
 from requests.auth import HTTPBasicAuth
 
-class ClientRequests():
-	def __init__(self):
-		self.connection()
+class ClientRequests(unittest.TestCase):
+	def setUp(self):
+		self.conn = connection()
+
+	def tearDown(self):
+		self.conn.disponse()
+		self.conn = None
 
 	def connection(self):
 		try:
@@ -78,19 +83,8 @@ class ClientRequests():
 		s = Session()
 		req = Request('GET', url2, data=payload1, headers=payload2)
 		prepped = s.prepare_request(req)
-
-		#do something with prepped.body and prepped.headers
 		resp = s.send(prepped, timeout=10)
-		#print resp.status_code
-		r_1 = requests.get('http://httpbin.org/stream/20', stream=True)
-		#print dir(json)
-		'''
-		for line in r_1.iter_lines():
-			if line:
-				print json.loads(line)
-		'''
-		#pro = {"http": "http://10.10.1.10:3128", "https": "http://10.10.1.10:1080"}
-		#requests.get("http://example.org", proxies=pro)		
+		r_1 = requests.get('http://httpbin.org/stream/20', stream=True)	
 		TOO_LONG = 50
 		r_bing = requests.get('http://bing.com')
 		#print r_bing.headers
@@ -101,13 +95,6 @@ class ClientRequests():
 			#print content
 		requests.Response.close(r_1)
 
-		'''
-		url11 = 'http://pan.baidu.com/disk/home#list/path=%2F%E6%88%91%E7%9A%84%E8%B5%84%E6%BA%90'
-		r_2 = requests.get('http://some.url/streamed')
-		print r_2.text
-		with open('ccccc.py') as f:
-			requests.post(url11, data=f)
-		'''
 		p_size = os.path.getsize('greece.jpg')
 		p1_size = os.path.getsize('face.jpg')
 		t1 = Image.open('greece.jpg')
@@ -117,40 +104,18 @@ class ClientRequests():
 		multiple_files = [('images', ('greece.jpg', open('greece.jpg', 'rb'), 'image/jpg')), \
 						('images', ('weibo.png', open('weibo.png', 'rb'), 'image/png'))]
 		r_3 = requests.post(url2, files=multiple_files)
-		
-		#print r_3.text
-	#requests.get('http://httpbin.org', hooks=dict(response=test_requests))
-	#hooks = dict(response=test_requests())
-	#requests.post('http://some.url/streamed', data=test_requests())
-		#url_head = 'https://api.github.com/users/kennethreitz/repos?page=1&per_page=10'
-		#head_ = requests.head(url=url_head)
-		#print head_.headers(['link'])
 
-class PizzaAuth(AuthBase):
-	def __init__(self, username):
-		self.username = None
+class ClientRequestsSuite(unittest.TestSuite):
+	def __init__(self):
+		unittest.TestSuite.__init__(self, map(ClientRequests, "test_requests"))
 
-	def __call__(self, r):
-		self.r.headers['X-Pizza'] = self.username
-		return r
-		print requests.get('http://pizzabin.org/admin', auth=PizzaAuth('kenneth'))
 
-		'''
-		auth = HTTPBasicAuth('fake@example.com', 'not_a_real_password')
-		body = json.dumps({u"body": u"Sounds great! I'll get right on it!"})
-		url_auth = u"https://api.github.com/repos/kennethreitz/requests/issues/482/comments"
-		r_auth = requests.post(url=url_auth, data=body, auth=auth)
-		print r_auth.status_code
-		content = r_auth.json()
-		print (content[u'body'])
-		#print help(requests.post)
-		#print "auth-------\n", help(auth), '\n'
-		'''
 if __name__ == '__main__':
-	url = 'https://github.com/timeline.json'
-	ClientRequests(url)
-	PizzaAuth(AuthBase)
-	
+	ClientRequestsSuite()
+	unittest.TextTestRunner(verbosity=2).run(ClientRequestsSuite)
+	#suite = unittest.TestLoader().loadTestsFromTestCase(ClientRequests)
+    #unittest.TextTestRunner(verbosity=2).run(suite)
+
 
 
 
